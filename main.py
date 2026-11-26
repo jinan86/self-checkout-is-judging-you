@@ -1,22 +1,40 @@
 #!/usr/bin/env python3
-"""The Self-Checkout Is Judging You — make.fun entry.
+"""Self-checkout judgement, delivered in one line.
 
-Writes one funny remark in the voice of a smug, judgmental
-self-checkout machine to /output/entry.txt.
-
-The line: a shopper with one banana and four energy drinks gets
-the machine's verdict on how the night is going to go.
+The machine has scanned the basket — one banana, four energy
+drinks — and it has formed an opinion about the evening ahead.
+This script simply records that verdict, word for word, in the
+file the competition expects: /output/entry.txt
 """
 
-import os
+from pathlib import Path
 
-ENTRY = "One banana. Four energy drinks. We both know how tonight ends."
+OUTPUT_PATH = Path("/output/entry.txt")
+
+# The entry line, exactly as submitted. Do not alter a single
+# character: the competition checks this text byte for byte.
+ENTRY_LINE = "One banana. Four energy drinks. We both know how tonight ends."
+
+
+def build_entry() -> str:
+    """Return the entry text exactly as it must be written.
+
+    Kept as a separate step so the exact text is built in one
+    place and written in another — no formatting, no newline,
+    no extra whitespace is ever added on the way out.
+    """
+    return ENTRY_LINE
+
+
+def write_entry(path: Path = OUTPUT_PATH) -> Path:
+    """Write the entry line to path (creating /output if needed)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(build_entry(), encoding="utf-8")
+    return path
 
 
 def main() -> None:
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8") as f:
-        f.write(ENTRY)
+    write_entry()
 
 
 if __name__ == "__main__":
